@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-purple-800 min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8 flex flex-col items-center">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-bold mb-2 animate__animated animate__bounceIn">Rock Paper Scissors</h1>
+            <p class="text-xl opacity-80">Classic game with a modern twist</p>
+        </header>
+
+        <!-- Score Board -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-8 w-full max-w-md border border-white/20 shadow-lg">
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold">YOU</h2>
+                    <p id="player-score" class="text-4xl font-bold text-green-400">0</p>
+                </div>
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold">VS</h2>
+                    <p class="text-sm opacity-70">Best of 5</p>
+                </div>
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold">CPU</h2>
+                    <p id="computer-score" class="text-4xl font-bold text-red-400">0</p>
+                </div>
+            </div>
+
+            <!-- Game Result Display -->
+            <div id="result-display" class="text-center py-3 px-4 bg-white/20 rounded-lg mb-4 min-h-12 flex items-center justify-center">
+                <p class="text-lg">Make your choice!</p>
+            </div>
+
+            <!-- Choices Display -->
+            <div class="flex justify-between mb-8">
+                <div class="text-center">
+                    <div id="player-choice" class="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/30">
+                        <span class="text-3xl">?</span>
+                    </div>
+                    <p class="text-sm">Your choice</p>
+                </div>
+                <div class="text-center">
+                    <div id="computer-choice" class="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-white/30">
+                        <span class="text-3xl">?</span>
+                    </div>
+                    <p class="text-sm">Computer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Choices -->
+        <div class="flex justify-center gap-4 mb-8 flex-wrap">
+            <button id="rock" class="choice-btn bg-gradient-to-br from-gray-400 to-gray-600 hover:from-gray-300 hover:to-gray-500 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 border-2 border-white/20">
+                <span class="text-4xl">✊</span>
+            </button>
+            <button id="paper" class="choice-btn bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-300 hover:to-blue-500 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 border-2 border-white/20">
+                <span class="text-4xl">✋</span>
+            </button>
+            <button id="scissors" class="choice-btn bg-gradient-to-br from-red-400 to-red-600 hover:from-red-300 hover:to-red-500 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 border-2 border-white/20">
+                <span class="text-4xl">✌️</span>
+            </button>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="flex gap-4">
+            <button id="reset-btn" class="px-6 py-2 bg-white/20 hover:bg-white/30 rounded-full transition-all border border-white/30">
+                Reset Game
+            </button>
+            <button id="how-to-play-btn" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-full transition-all">
+                How to Play
+            </button>
+        </div>
+
+        <!-- Game History -->
+        <div class="mt-8 w-full max-w-md">
+            <h3 class="text-xl font-semibold mb-3 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                Game History
+            </h3>
+            <div id="game-history" class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 max-h-48 overflow-y-auto">
+                <p class="text-center text-white/50 py-4">Your game history will appear here</p>
+                <!-- History items will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- How to Play Modal -->
+    <div id="how-to-play-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 max-w-md mx-4 border border-white/20 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold">How to Play</h3>
+                <button id="close-modal-btn" class="text-white/70 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <p>Rock Paper Scissors is a simple hand game played between two players.</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Rock</strong> crushes <strong>Scissors</strong> ✊ > ✌️</li>
+                    <li><strong>Scissors</strong> cuts <strong>Paper</strong> ✌️ > ✋</li>
+                    <li><strong>Paper</strong> covers <strong>Rock</strong> ✋ > ✊</li>
+                </ul>
+                <p>If both players choose the same option, it's a tie.</p>
+                <p class="text-sm text-white/70">First to win 3 rounds wins the game!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas (for celebrations) -->
+    <canvas id="confetti-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-40 hidden"></canvas>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game state
+            let playerScore = 0;
+            let computerScore = 0;
+            let roundHistory = [];
+            let gameOver = false;
+            
+            // DOM elements
+            const playerScoreEl = document.getElementById('player-score');
+            const computerScoreEl = document.getElementById('computer-score');
+            const resultDisplayEl = document.getElementById('result-display');
+            const playerChoiceEl = document.getElementById('player-choice');
+            const computerChoiceEl = document.getElementById('computer-choice');
+            const gameHistoryEl = document.getElementById('game-history');
+            const choiceButtons = document.querySelectorAll('.choice-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const howToPlayBtn = document.getElementById('how-to-play-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const howToPlayModal = document.getElementById('how-to-play-modal');
+            const confettiCanvas = document.getElementById('confetti-canvas');
+            
+            // Emoji mappings
+            const emojiMap = {
+                rock: '✊',
+                paper: '✋',
+                scissors: '✌️'
+            };
+            
+            // Initialize the game
+            initGame();
+            
+            function initGame() {
+                playerScore = 0;
+                computerScore = 0;
+                roundHistory = [];
+                gameOver = false;
+                
+                updateScores();
+                resultDisplayEl.innerHTML = '<p class="text-lg">Make your choice!</p>';
+                playerChoiceEl.innerHTML = '<span class="text-3xl">?</span>';
+                computerChoiceEl.innerHTML = '<span class="text-3xl">?</span>';
+                gameHistoryEl.innerHTML = '<p class="text-center text-white/50 py-4">Your game history will appear here</p>';
+                
+                // Enable choice buttons
+                choiceButtons.forEach(button => {
+                    button.disabled = false;
+                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+            }
+            
+            // Event listeners
+            choiceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (gameOver) return;
+                    
+                    const playerChoice = button.id;
+                    playRound(playerChoice);
+                });
+            });
+            
+            resetBtn.addEventListener('click', initGame);
+            
+            howToPlayBtn.addEventListener('click', () => {
+                howToPlayModal.classList.remove('hidden');
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                howToPlayModal.classList.add('hidden');
+            });
+            
+            // Close modal when clicking outside
+            howToPlayModal.addEventListener('click', (e) => {
+                if (e.target === howToPlayModal) {
+                    howToPlayModal.classList.add('hidden');
+                }
+            });
+            
+            // Game logic
+            function playRound(playerChoice) {
+                if (gameOver) return;
+                
+                const computerChoice = getComputerChoice();
+                const result = determineWinner(playerChoice, computerChoice);
+                
+                // Update scores
+                if (result === 'win') playerScore++;
+                if (result === 'lose') computerScore++;
+                
+                // Update UI
+                updateChoices(playerChoice, computerChoice);
+                updateResult(result, playerChoice, computerChoice);
+                updateScores();
+                addToHistory(playerChoice, computerChoice, result);
+                
+                // Check for game over
+                if (playerScore >= 3 || computerScore >= 3) {
+                    endGame();
+                }
+            }
+            
+            function getComputerChoice() {
+                const choices = ['rock', 'paper', 'scissors'];
+                const randomIndex = Math.floor(Math.random() * choices.length);
+                return choices[randomIndex];
+            }
+            
+            function determineWinner(playerChoice, computerChoice) {
+                if (playerChoice === computerChoice) {
+                    return 'draw';
+                }
+                
+                if (
+                    (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                    (playerChoice === 'paper' && computerChoice === 'rock') ||
+                    (playerChoice === 'scissors' && computerChoice === 'paper')
+                ) {
+                    return 'win';
+                }
+                
+                return 'lose';
+            }
+            
+            function updateChoices(playerChoice, computerChoice) {
+                // Add animation classes
+                playerChoiceEl.classList.add('animate__animated', 'animate__bounceIn');
+                computerChoiceEl.classList.add('animate__animated', 'animate__bounceIn');
+                
+                // Remove animation classes after animation completes
+                setTimeout(() => {
+                    playerChoiceEl.classList.remove('animate__animated', 'animate__bounceIn');
+                    computerChoiceEl.classList.remove('animate__animated', 'animate__bounceIn');
+                }, 1000);
+                
+                // Update choice emojis
+                playerChoiceEl.innerHTML = `<span class="text-4xl">${emojiMap[playerChoice]}</span>`;
+                computerChoiceEl.innerHTML = `<span class="text-4xl">${emojiMap[computerChoice]}</span>`;
+            }
+            
+            function updateResult(result, playerChoice, computerChoice) {
+                let resultText = '';
+                let resultClass = '';
+                
+                switch (result) {
+                    case 'win':
+                        resultText = `You win! ${emojiMap[playerChoice]} beats ${emojiMap[computerChoice]}`;
+                        resultClass = 'text-green-400';
+                        break;
+                    case 'lose':
+                        resultText = `You lose! ${emojiMap[computerChoice]} beats ${emojiMap[playerChoice]}`;
+                        resultClass = 'text-red-400';
+                        break;
+                    case 'draw':
+                        resultText = `It's a draw! Both chose ${emojiMap[playerChoice]}`;
+                        resultClass = 'text-yellow-400';
+                        break;
+                }
+                
+                // Add animation
+                resultDisplayEl.classList.add('animate__animated', 'animate__fadeIn');
+                setTimeout(() => {
+                    resultDisplayEl.classList.remove('animate__animated', 'animate__fadeIn');
+                }, 1000);
+                
+                resultDisplayEl.innerHTML = `<p class="text-lg font-semibold ${resultClass}">${resultText}</p>`;
+            }
+            
+            function updateScores() {
+                playerScoreEl.textContent = playerScore;
+                computerScoreEl.textContent = computerScore;
+            }
+            
+            function addToHistory(playerChoice, computerChoice, result) {
+                // Create history item if it's the first one
+                if (gameHistoryEl.querySelector('p.text-white\\/50')) {
+                    gameHistoryEl.innerHTML = '';
+                }
+                
+                const historyItem = document.createElement('div');
+                historyItem.className = 'py-2 px-3 mb-2 bg-white/5 rounded-lg border border-white/10';
+                
+                let resultIcon = '';
+                let resultColor = '';
+                
+                switch (result) {
+                    case 'win':
+                        resultIcon = '🏆';
+                        resultColor = 'text-green-400';
+                        break;
+                    case 'lose':
+                        resultIcon = '💀';
+                        resultColor = 'text-red-400';
+                        break;
+                    case 'draw':
+                        resultIcon = '🤝';
+                        resultColor = 'text-yellow-400';
+                        break;
+                }
+                
+                historyItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <span class="text-xl mr-2">${emojiMap[playerChoice]}</span>
+                            <span class="text-sm opacity-80">vs</span>
+                            <span class="text-xl ml-2">${emojiMap[computerChoice]}</span>
+                        </div>
+                        <span class="${resultColor} font-semibold">${resultIcon}</span>
+                    </div>
+                `;
+                
+                // Add to top of history
+                gameHistoryEl.insertBefore(historyItem, gameHistoryEl.firstChild);
+                
+                // Scroll to top
+                gameHistoryEl.scrollTop = 0;
+            }
+            
+            function endGame() {
+                gameOver = true;
+                
+                // Disable choice buttons
+                choiceButtons.forEach(button => {
+                    button.disabled = true;
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                });
+                
+                // Show final result
+                let finalResult = '';
+                if (playerScore > computerScore) {
+                    finalResult = 'Congratulations! You won the game! 🎉';
+                    triggerConfetti();
+                } else {
+                    finalResult = 'Game over! Computer won. Try again!';
+                }
+                
+                resultDisplayEl.innerHTML = `
+                    <p class="text-xl font-bold ${playerScore > computerScore ? 'text-green-400' : 'text-red-400'}">
+                        ${finalResult}
+                    </p>
+                `;
+            }
+            
+            function triggerConfetti() {
+                confettiCanvas.classList.remove('hidden');
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+                
+                const ctx = confettiCanvas.getContext('2d');
+                const particles = [];
+                const particleCount = 150;
+                
+                // Create particles
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * confettiCanvas.width,
+                        y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                        size: Math.random() * 10 + 5,
+                        weight: Math.random() * 0.5 + 1,
+                        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                        speed: Math.random() * 3 - 1.5
+                    });
+                }
+                
+                function animateConfetti() {
+                    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                    
+                    let stillActive = false;
+                    
+                    particles.forEach(particle => {
+                        particle.y += particle.weight;
+                        particle.x += particle.speed;
+                        
+                        if (particle.y <= confettiCanvas.height) {
+                            stillActive = true;
+                        }
+                        
+                        ctx.fillStyle = particle.color;
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.fill();
+                    });
+                    
+                    if (stillActive) {
+                        requestAnimationFrame(animateConfetti);
+                    } else {
+                        confettiCanvas.classList.add('hidden');
+                    }
+                }
+                
+                animateConfetti();
+            }
+        });
+    </script>
+</body>
+</html>

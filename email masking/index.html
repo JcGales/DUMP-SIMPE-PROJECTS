@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Masking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-purple-800 min-h-screen flex flex-col items-center justify-center text-white p-6">
+  
+  <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 max-w-md w-full border border-white/20 shadow-lg text-center">
+    <h1 class="text-3xl font-bold mb-4">Email Masking</h1>
+    <p class="text-white/70 mb-6">Enter your email and mask it securely.</p>
+    
+    <input id="email-input" type="email" placeholder="Enter your email"
+      class="w-full p-3 mb-4 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-purple-500 outline-none" />
+
+    <button id="mask-btn"
+      class="w-full py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all font-semibold">
+      Mask Email
+    </button>
+
+    <div id="result" class="mt-6 text-lg font-semibold text-green-400">Masked email will appear here.</div>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById('email-input');
+    const maskBtn = document.getElementById('mask-btn');
+    const result = document.getElementById('result');
+
+    maskBtn.addEventListener("click", ()=>{
+      const emailValue = emailInput.value;
+
+      const domainStart = emailValue.indexOf("@");
+      const centerPart = emailValue.slice(0, domainStart);
+      const domainPart = emailValue.slice(domainStart);
+
+      const maskedMiddle = centerPart.slice(1, centerPart.length - 1).replace(/./g, '*');
+      const middlePartTotal = centerPart.slice(0, 1) + maskedMiddle + centerPart.slice(centerPart.length-1);
+      result.innerHTML = middlePartTotal + domainPart;
+
+
+
+      // const emailValue = emailInput.value;
+
+      // const lastPart = emailValue.indexOf('@');
+      // const centerPart = emailValue.slice(0, lastPart);
+      // const domainPart = emailValue.slice(lastPart);
+
+      // const middlePart = centerPart.slice(1, centerPart.length - 1).replace(/./g, '*');
+      // const maskedMiddlePart = centerPart.slice(0, 1) + middlePart + centerPart.slice(centerPart.length- 1);
+      // result.innerHTML =  maskedMiddlePart + domainPart;
+    })
+  </script>
+
+</body>
+</html>

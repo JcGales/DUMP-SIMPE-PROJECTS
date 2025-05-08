@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-700 mb-4">Age Calculator</h1>
+        <div class="mb-4">
+            <label for="dob" class="block text-sm font-medium text-gray-600">Enter Your Birthdate</label>
+            <input type="date" id="dob" class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+        <button id="calculate" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">Calculate Age</button>
+        <div id="result" class="mt-4 text-lg font-medium text-gray-700"></div>
+    </div>
+
+
+
+    <script>
+      const userInput = document.getElementById("dob");
+      const resultBtn = document.getElementById("calculate");
+      
+
+      resultBtn.addEventListener("click", ()=>{
+        const inputted = userInput.value;
+        const birthdate = new Date(inputted);
+        const dateNow = new Date();
+
+        let days = dateNow.getDate() - birthdate.getDate();
+        let months = dateNow.getMonth() - birthdate.getMonth();
+        let year = dateNow.getFullYear() - birthdate.getFullYear();
+        if
+        (!inputted){
+          document.getElementById("result").innerHTML=  `Please input your birthdate!`;
+          return false;
+        }
+        else
+        {
+          document.getElementById("result").innerHTML=  `You are ${year} years, ${months} months, ${days} days old`;
+        }
+      })
+
+    
+   
+      
+    </script>
+</body>
+</html>

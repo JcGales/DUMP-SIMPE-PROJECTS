@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS Translator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        *{
+          color: rgba(225, 77, 99, 0.673);
+        }
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        
+    
+        .neumorphic {
+            background: rgba(224, 224, 224, 0.6); 
+            border-radius: 20px;
+            box-shadow: inset 6px 6px 12px rgba(190, 190, 190, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+  
+        .neumorphic-btn {
+            background: #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            padding: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .neumorphic-btn:active {
+            box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen text-gray-800">
+
+
+    <video class="video-bg" autoplay loop muted>
+        <source src="/text to speech converte language/3252974-uhd_2560_1440_25fps.mp4" type="video/mp4">
+    </video>
+
+ 
+    <div class="neumorphic p-8 max-w-lg w-full text-center space-y-6">
+        <h1 class="text-3xl font-bold">TEXT TO SPEECH</h1>
+        <p class="text-gray-600 text-sm italic">Break language barriers effortlessly! Type in any language and hear it spoken in another—seamlessly and beautifully.  🌎</p>
+
+    
+        <label class="block text-sm font-medium">Input Language:</label>
+        <select id="inputLanguage" class="w-full p-2 rounded-lg text-black">
+            <option value="en">🇺🇸 English</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="tl">🇵🇭 Filipino</option>
+            <option value="de">🇩🇪 German</option>
+        </select>
+
+  
+        <textarea id="text" class="w-full p-3 rounded-lg text-black" placeholder="Type your text here..."></textarea>
+
+        <label class="block text-sm font-medium">Output Language:</label>
+        <select id="outputLanguage" class="w-full p-2 rounded-lg text-black">
+          <option value="en">🇺🇸 English</option>
+          <option value="es">🇪🇸 Spanish</option>
+          <option value="fr">🇫🇷 French</option>
+          <option value="de">🇩🇪 German</option>
+          <option value="tl">🇵🇭 Filipino</option>
+          <option value="ja">🇯🇵 Japanese</option>
+      </select>
+      
+        <button id="translateSpeak" class="w-full py-2 rounded-lg neumorphic-btn font-bold text-lg">
+            Translate & Speak
+        </button>
+
+    
+        <div id="translatedText" class="mt-4 text-lg font-medium"></div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById("text");
+        const inputLanguage = document.getElementById("inputLanguage");
+        const outputLanguage = document.getElementById("outputLanguage");
+        const translateSpeakButton = document.getElementById("translateSpeak");
+        const translatedTextDiv = document.getElementById("translatedText");
+        
+        async function translateText(text, fromLang, toLang) {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.responseData.translatedText;
+        }
+
+        translateSpeakButton.addEventListener("click", async () => {
+            const text = textInput.value.trim();
+            if (!text) return alert("⚠️ Please enter some text!");
+
+            const fromLang = inputLanguage.value;
+            const toLang = outputLanguage.value;
+            translatedTextDiv.innerHTML = "Translating... ⏳";
+
+            try {
+                const translatedText = await translateText(text, fromLang, toLang);
+                translatedTextDiv.innerHTML = translatedText;
+
+                // Speak the translated text
+                const utterance = new SpeechSynthesisUtterance(translatedText);
+                utterance.lang = toLang;
+                speechSynthesis.speak(utterance);
+            } catch (error) {
+                translatedTextDiv.innerHTML = "❌ Translation failed.";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
